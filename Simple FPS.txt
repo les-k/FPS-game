@@ -1,0 +1,93 @@
+import pygame
+
+# Initialize pygame
+pygame.init()
+
+# Set the screen size
+screen = pygame.display.set_mode((800, 600))
+
+# Set the game title
+pygame.display.set_caption("Simple FPS Game")
+
+# Load game images
+target_image = pygame.image.load("target.png")
+building_image = pygame.image.load("building.png")
+car_image = pygame.image.load("car.png")
+player_image = pygame.image.load("player.png")
+
+# Set the player starting position
+player_x = 400
+player_y = 500
+player_rect = pygame.Rect(player_x, player_y, player_image.get_width(), player_image.get_height())
+
+# Set the target position
+target_x = 100
+target_y = 100
+target_rect = pygame.Rect(target_x, target_y, target_image.get_width(), target_image.get_height())
+
+# Set the building position
+building_x = 200
+building_y = 300
+building_rect = pygame.Rect(building_x, building_y, building_image.get_width(), building_image.get_height())
+
+# Set the car position
+car_x = 500
+car_y = 400
+car_rect = pygame.Rect(car_x, car_y, car_image.get_width(), car_image.get_height())
+
+# Set the score
+score = 0
+
+# Load game sounds
+shoot_sound = pygame.mixer.Sound("shoot.wav")
+hit_sound = pygame.mixer.Sound("hit.wav")
+
+# Run the game loop
+running = True
+while running:
+  for event in pygame.event.get():
+    if event.type == pygame.QUIT:
+      running = False
+    if event.type == pygame.KEYDOWN:
+      # Player controls
+      if event.key == pygame.K_LEFT:
+        player_x -= 5
+      if event.key == pygame.K_RIGHT:
+        player_x += 5
+      if event.key == pygame.K_UP:
+        player_y -= 5
+      if event.key == pygame.K_DOWN:
+        player_y += 5
+      if event.key == pygame.K_SPACE:
+        # Play the shoot sound
+        shoot_sound.play()
+        # Check for a hit
+        if player_rect.colliderect(target_rect):
+          # Increment the score
+          score += 1
+          # Play the hit sound
+          hit_sound.play()
+        if player_rect.colliderect(building_rect):
+          # Decrement the score
+          score -= 1
+
+  # Clear the screen
+  screen.fill((0, 0, 0))
+
+  # Draw game elements
+  screen.blit(target_image, (target_x, target_y))
+  screen.blit(building_image, (building_x, building_y))
+  screen.blit(car_image, (car_x, car_y))
+  screen.blit(player_image, (player_x, player_y))
+  player_rect = pygame.Rect(player_x, player_y, player_image.get_width(), player_image.get_height())
+
+Display the score
+font = pygame.font.Font(None, 36)
+score_text = font.render("Score: {}".format(score), 1, (255, 255, 255))
+screen.blit(score_text, (650, 550))
+
+Update the display
+pygame.display.update()
+
+Quit pygame
+pygame.quit()
